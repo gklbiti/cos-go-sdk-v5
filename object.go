@@ -1,6 +1,7 @@
 package cos
 
 import (
+	"bytes"
 	"context"
 	"encoding/xml"
 	"errors"
@@ -10,6 +11,7 @@ import (
 	"net/url"
 	"os"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -161,6 +163,13 @@ type ObjectPutOptions struct {
 //
 // https://www.qcloud.com/document/product/436/7749
 func (s *ObjectService) Put(ctx context.Context, name string, r io.Reader, opt *ObjectPutOptions) (*Response, error) {
+	buf := &bytes.Buffer{}
+	nRead, err := io.Copy(buf, r)
+	opt.ObjectPutHeaderOptions.ContentLength, _ = strconv.Atoi(strconv.FormatInt(nRead, 10))
+	if err != nil {
+		fmt.Println(err)
+	}
+	//opt.ContentLength = r.Stat()
 	sendOpt := sendOptions{
 		baseURL:   s.client.BaseURL.BucketURL,
 		uri:       "/" + encodeURIComponent(name),
