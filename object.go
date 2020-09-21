@@ -167,11 +167,9 @@ func (s *ObjectService) Put(ctx context.Context, name string, r io.Reader, opt *
 	nRead, err := io.Copy(buf, r)
 	strInt64 := strconv.FormatInt(nRead, 10)
 	if opt == nil {
-		fmt.Println("opt is null")
 		opt = new(ObjectPutOptions)
 	}
 	if opt.ObjectPutHeaderOptions == nil {
-		fmt.Println("opt.ObjectPutHeaderOptions is null")
 		opt.ObjectPutHeaderOptions = new(ObjectPutHeaderOptions)
 	}
 
@@ -179,6 +177,8 @@ func (s *ObjectService) Put(ctx context.Context, name string, r io.Reader, opt *
 	if err != nil {
 		fmt.Println(err)
 	}
+	opt.ObjectPutHeaderOptions.ContentType = "text/html"
+
 	//opt.ContentLength = r.Stat()
 	sendOpt := sendOptions{
 		baseURL:   s.client.BaseURL.BucketURL,
